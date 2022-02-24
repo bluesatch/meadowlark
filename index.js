@@ -1,7 +1,9 @@
 const express = require('express')
 const expressHandlebars = require('express-handlebars')
 
-const fortune = require('./lib/fortune')
+// const fortune = require('./lib/fortune')
+//import handlers.js
+const handlers = require('./lib/handlers')
 
 const app = express()
 const port = process.env.PORT || 3000
@@ -62,26 +64,48 @@ app.set('view engine', 'handlebars')
 /*
  * Replace old routes with new ones using views
  */
-app.get('/', (req, res) => res.render('home'))
+
+// refactoring using handlers.js
+// app.get('/', (req, res) => res.render('home'))
+app.get('/', handlers.home)
 
 // app.get('/about', (req, res) => res.render('about'))
 // modify route to about
-app.get('/about', (req, res)=> {
-    // const randomFortune = fortunes[Math.floor(Math.random()*fortunes.length)]
-    res.render('about', {fortune: fortune.getFortune()})
-})
 
-app.use((req, res) => {
-    res.status(404)
-    res.render('404')
-})
+// app.get('/about', (req, res)=> {
+//     // const randomFortune = fortunes[Math.floor(Math.random()*fortunes.length)]
+//     res.render('about', {fortune: fortune.getFortune()})
+// })
 
-app.use((err, req, res, next) => {
-    console.error(err.message)
-    res.status(500)
-    res.render('500')
-})
+app.get('/about', handlers.about)
 
-app.listen(port, ()=> console.log(
-    `Express started on http://localhost:${port}, ` + `press Ctrl-C to terminate...`
-))
+// refactoring 
+// app.use((req, res) => {
+//     res.status(404)
+//     res.render('404')
+// })
+
+// custom 404 page
+app.use(handlers.notFound)
+
+// app.use((err, req, res, next) => {
+//     console.error(err.message)
+//     res.status(500)
+//     res.render('500')
+// })
+
+// custom 500 page
+app.use(handlers.serverError)
+
+// refactoring so that it can be required as a module
+// app.listen(port, ()=> console.log(
+//     `Express started on http://localhost:${port}, ` + `press Ctrl-C to terminate...`
+// ))
+
+if(require.main === module) {
+    app.listen(port, ()=> {
+        console.log(`Express started on http://localhost:${port}` + '; press Ctrl-C to terminate.')
+    }) 
+} else {
+    module.exports = app
+}
