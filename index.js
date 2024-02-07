@@ -1,25 +1,20 @@
+//mocking
+const handlers = require('./lib/handlers')
 const express = require('express')
+
+const app = express()
+const port = process.env.PORT || 3000
+
+app.get('/', handlers.home)
+app.get('/about', handlers.about)
+app.use(handlers.notFound)
+app.use(handlers.serverError)
+
 // import handlebars
 const handlebars = require('express-handlebars')
 
 // importing getFortune 
 const fortune = require('./lib/fortune')
-const app = express()
-const port = process.env.PORT || 3000
-
-// adding routes for home and about page 
-/**
- * app.METHOD (get or post, usually)
- * 
- * two parameters (path, function)
- * 
- * path defines the route 
- * 
- * function gets invoked with the route is matched. pass in request and response objects
- * 
- * IN EXPRESS, THE ORDER IN WHICH ROUTES AND MIDDLEWARE ARE ADDED IS SIGNIFICANT
- */
-
 
 
 // add the static middleware 
@@ -29,6 +24,7 @@ app.use(express.static(__dirname + '/public'))
 app.engine('handlebars', handlebars.engine({
     defaultLayout: 'main'
 }))
+// adding routes for home and about page 
 
 app.set('view engine', 'handlebars')
 
@@ -57,6 +53,13 @@ app.use((err, req, res, next)=> {
     res.render('500')
 })
 
-app.listen(port, ()=> {
-    console.log(`It's the port ${port} for me. Press Ctrl+C to terminate`)
-})
+// app.listen(port, ()=> {
+//     console.log(`It's the port ${port} for me. Press Ctrl+C to terminate`)
+// })
+if(require.main === module) {
+    app.listen(port, ()=> {
+        console.log(`Express started on http://localhost:${port}; press Ctrl+C to terminate`)
+    })
+} else {
+    module.exports = app
+}
