@@ -40,6 +40,16 @@ app.get('/about', (req, res)=> {
     res.render('about', { fortune: fortune.getFortune() })
 })
 
+// see headers 
+app.get('/headers', (req, res)=> {
+    res.type('text/plain')
+    const headers = Object.entries(req.headers)
+        .map(([key, value])=> `${key}: ${value}`)
+    console.log(headers)
+    res.send(headers.join('\n'))
+})
+
+
 //for error pages, use .use instead of .get => did not get matched by a route
 // custom 404 page 
 app.use((req, res)=> {
@@ -59,7 +69,7 @@ app.use((err, req, res, next)=> {
 // })
 if(require.main === module) {
     app.listen(port, ()=> {
-        console.log(`Express started on http://localhost:${port}; press Ctrl+C to terminate`)
+        console.log(`Express started on http://localhost:${port}; press Ctrl+C to terminate\nnavigate to http://localhost:${port}/headers\n `)
     })
 } else {
     module.exports = app
