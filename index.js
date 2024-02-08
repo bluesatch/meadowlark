@@ -16,7 +16,6 @@ const handlebars = require('express-handlebars')
 // importing getFortune 
 const fortune = require('./lib/fortune')
 
-const test = 'this is a test'
 
 
 // add the static middleware 

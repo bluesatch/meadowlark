@@ -19,3 +19,5 @@ Using Jest as a test framework (will run both unit and integration tests)
     "scripts": { "test": "jest"}
 
     npm test
+
+    Also installing puppeteer, portfinder and eslint
